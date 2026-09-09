@@ -1,0 +1,52 @@
+{
+  "name": "dsh-copy-session-ref",
+  "version": "0.1.0",
+  "description": "在会话行菜单复制规范 @session mention, 粘贴到输入框即可召回该会话上下文",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azazo1/dsh-copy-session-ref.git"
+  },
+  "type": "module",
+  "main": "lib/index.mjs",
+  "types": "lib/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.mts",
+      "default": "./lib/index.mjs"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.mjs",
+    "lib/index.d.mts",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-ui-workspace"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "pnpm run build:host && pnpm run build:client",
+    "build:host": "pnpm exec tsdown --config tsdown.host.config.ts",
+    "build:client": "pnpm exec tsdown --config tsdown.client.config.ts"
+  },
+  "devDependencies": {
+    "tsdown": "^0.22.2",
+    "typescript": "~5.9.0"
+  }
+}
