@@ -16,12 +16,27 @@ export function encodeSessionReferenceUri(sessionId: string): string {
 }
 
 /**
+ * Make a display label safe inside the wire mention `@[label](uri)`.
+ *
+ * Minimal on purpose: the label grammar is delimited by `]` and escapes with
+ * `\`, so only those two characters are escaped. Line breaks and tabs become
+ * spaces because a mention is an inline token, not a block. Everything else,
+ * quotes and brackets included, is left exactly as the rules produced it.
+ * @param label - label produced by the configured naming rules.
+ * @returns the label as the wire form spells it.
+ */
+export function escapeMentionLabel(label: string): string {
+  return label
+    .replace(/[\r\n\t]+/gu, ' ')
+    .replace(/[\\\]]/gu, match => `\\${match}`)
+}
+
+/**
  * Render the host-neutral Markdown mention the composer and Host both parse.
  * @param sessionId - opaque session id.
- * @param label - user-facing title.
+ * @param label - user-facing title after the naming rules ran.
  * @returns `@[label](dsh-session:...)` mention.
  */
 export function formatSessionReferenceMention(sessionId: string, label: string): string {
-  const escaped = label.replace(/[\\\]]/gu, match => `\\${match}`)
-  return `@[${escaped}](${encodeSessionReferenceUri(sessionId)})`
+  return `@[${escapeMentionLabel(label)}](${encodeSessionReferenceUri(sessionId)})`
 }

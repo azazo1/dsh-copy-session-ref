@@ -6,7 +6,11 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "lib": ["ES2022", "DOM"]
+    "allowImportingTsExtensions": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "types": ["node"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src", "tests", "tsdown.host.config.ts", "tsdown.client.config.ts"]
 }

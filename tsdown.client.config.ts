@@ -10,6 +10,16 @@ export default defineConfig({
   dts: false,
   sourcemap: false,
   clean: false,
+  target: 'es2022',
+  deps: {
+    // 这些是 shell 冻结模块表里的平台模块, 运行时由 loader 的 require 提供.
+    neverBundle: [
+      'react',
+      'react/jsx-runtime',
+      '@deepseek-ai/dsh-client-store',
+      '@deepseek-ai/dsh-client-ui-primitives',
+    ],
+  },
   outputOptions: {
     entryFileNames: 'client.js',
     banner: `window.__ModuleLoader__.load({ id: ${JSON.stringify(pluginId)}, factory: (require) => {`,

@@ -1,3 +1,20 @@
+# dsh-copy-session-ref bundle patch
+#
+# 把插件行插进 profile: Host 半区提供命名规则的 Config, Client 半区负责菜单与配置表单.
+#
+# 行 id 即 settings 表单寻址用的条目 id, Client 侧按它绑定配置表单, 不要随意改名.
+#
+# 规则默认值来自 Host 的 Config schema (空白折成 -, 再用双引号包裹);
+# 用户在 设置 -> Plugins -> dsh-copy-session-ref 里改, 也可在这里或更靠后的 patch 层覆盖:
+#
+#   - id: dsh-copy-session-ref
+#     config:
+#       version: 1
+#       rules:
+#         - enabled: true
+#           pattern: '\s+'
+#           flags: gu
+#           replacement: '-'
 - insert:
     - id: dsh-copy-session-ref
       name: dsh-copy-session-ref
