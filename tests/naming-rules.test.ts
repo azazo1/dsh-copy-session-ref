@@ -11,6 +11,19 @@ function rule(partial: Partial<LabelRule>): LabelRule {
   return { enabled: true, pattern: '', flags: 'gu', replacement: '', ...partial }
 }
 
+/**
+ * 把我们拼出的 wire 形式交给 Host 的解析规则, 还原出语义上的名称.
+ * 正则与反转义照抄 Host 侧 packages/context/session-reference/src/uri.ts.
+ * @param label - 规则算出的名称.
+ * @returns Host 解析后模型侧会看到的名称.
+ */
+function roundTripThroughHost(label: string): string {
+  const pattern = /@\[((?:\\.|[^\\\]])*)\]\((dsh-session:[^\s)]*)\)|(dsh-session:[A-Za-z0-9_-]+)/gu
+  const parsed = [...formatSessionReferenceMention('sess-1', label).matchAll(pattern)]
+  assert.equal(parsed.length, 1)
+  return parsed[0][1]?.replace(/\\(.)/gu, '$1') ?? ''
+}
+
 describe('applyRules', () => {
   it('把默认规则跑成引号包裹的横线名称', () => {
     assert.equal(applyRules('raw title', DEFAULT_RULES), '"raw-title"')
@@ -22,6 +35,14 @@ describe('applyRules', () => {
 
   it('连续空白与首尾空白一起折成一个横线', () => {
     assert.equal(applyRules('  多  空格 标题 ', DEFAULT_RULES), '"-多-空格-标题-"')
+  })
+
+  it('默认规则转义名称里原有的双引号, 包裹引号不参与转义', () => {
+    assert.equal(applyRules('my "cool" title', DEFAULT_RULES), '"my-\\"cool\\"-title"')
+  })
+
+  it('默认规则不影响没有引号的标题', () => {
+    assert.equal(applyRules('plain title', DEFAULT_RULES), '"plain-title"')
   })
 
   it('按顺序应用规则, 后面的规则看到前面规则的结果', () => {
@@ -110,12 +131,13 @@ describe('formatSessionReferenceMention', () => {
 
   it('标签里的反斜杠与右方括号被转义后仍能被 Host 解析回原名', () => {
     const label = 'a]b\\c'
-    const mention = formatSessionReferenceMention('sess-1', label)
-    // Host 侧 packages/context/session-reference/src/uri.ts 的解析正则与反转义.
-    const pattern = /@\[((?:\\.|[^\\\]])*)\]\((dsh-session:[^\s)]*)\)|(dsh-session:[A-Za-z0-9_-]+)/gu
-    const parsed = [...mention.matchAll(pattern)]
-    assert.equal(parsed.length, 1)
-    assert.equal(parsed[0][1]?.replace(/\\(.)/gu, '$1'), label)
+    assert.equal(roundTripThroughHost(label), label)
+  })
+
+  it('带引号的名称经 wire 形式往返后仍是规则算出的名称', () => {
+    const label = applyRules('my "cool" title', DEFAULT_RULES)
+    assert.equal(label, '"my-\\"cool\\"-title"')
+    assert.equal(roundTripThroughHost(label), label)
   })
 })
 

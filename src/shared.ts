@@ -42,12 +42,16 @@ export interface PluginSettings {
 }
 
 /**
- * 内置默认规则: 先把连续空白折成 `-`, 再用双引号把名称包起来.
- * `raw title` 变成 `"raw-title"`; 空标题变成 `""`.
+ * 内置默认规则, 顺序即执行顺序:
+ * 1. 连续空白折成 `-`.
+ * 2. 名称里原有的双引号转义成 `\"`, 免得和外面的包裹引号混在一起.
+ * 3. 最后才用双引号把名称整个包起来, 包裹引号本身不参与上一步的转义.
+ * `raw title` 变成 `"raw-title"`; `my "cool" title` 变成 `"my-\"cool\"-title"`; 空标题变成 `""`.
  * 冻结后同时作为 Host schema 默认值与 Client 兜底值, 只读.
  */
 export const DEFAULT_RULES: readonly LabelRule[] = Object.freeze([
   Object.freeze({ enabled: true, pattern: '\\s+', flags: 'gu', replacement: '-' }),
+  Object.freeze({ enabled: true, pattern: '"', flags: 'gu', replacement: '\\"' }),
   Object.freeze({ enabled: true, pattern: '^([\\s\\S]*)$', flags: 'u', replacement: '"$1"' }),
 ])
 

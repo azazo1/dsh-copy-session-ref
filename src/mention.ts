@@ -20,8 +20,11 @@ export function encodeSessionReferenceUri(sessionId: string): string {
  *
  * Minimal on purpose: the label grammar is delimited by `]` and escapes with
  * `\`, so only those two characters are escaped. Line breaks and tabs become
- * spaces because a mention is an inline token, not a block. Everything else,
- * quotes and brackets included, is left exactly as the rules produced it.
+ * spaces because a mention is an inline token, not a block. A double quote is
+ * not special to that grammar and is left alone here on purpose: the naming
+ * rules own the quoted-name style and the default set escapes the name's own
+ * quotes before wrapping the name in quotes, so escaping quotes again at this
+ * layer would double every backslash that rule produced.
  * @param label - label produced by the configured naming rules.
  * @returns the label as the wire form spells it.
  */
