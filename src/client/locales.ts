@@ -1,9 +1,15 @@
-/** 设置表单的文案字典. 菜单项文案仍沿用 workspace 字典, 不在此处. */
+/**
+ * 本插件的文案字典: 设置表单, 以及两个复制引用入口的行文案.
+ */
 import type { SettingsFormLabels } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { Translate } from '@deepseek-ai/dsh-client-ui-slots'
 
 /** 本插件字典的 key 全集. */
 export type CopySessionRefLocaleKey =
+  | 'copy'
+  | 'copied'
+  | 'copyFailed'
+  | 'copyAria'
   | 'summary'
   | 'intro'
   | 'enabled'
@@ -29,6 +35,10 @@ export type CopySessionRefLocaleKey =
 
 /** 英文文案. */
 export const en: Record<CopySessionRefLocaleKey, string> = {
+  copy: 'Copy reference',
+  copied: 'Copied',
+  copyFailed: 'Copy failed',
+  copyAria: 'Copy reference: {name}',
   summary: 'Naming rules for copied session references',
   intro: 'One rule per row, left to right: pattern, flags and replacement text. The leading checkbox enables the rule and the trailing buttons reorder or remove it. Rules run in order over the session title; an empty pattern skips that rule, and one that does not compile is skipped when copying.',
   enabled: 'Enabled',
@@ -55,6 +65,10 @@ export const en: Record<CopySessionRefLocaleKey, string> = {
 
 /** 中文文案. */
 export const zh: Record<CopySessionRefLocaleKey, string> = {
+  copy: '复制引用',
+  copied: '已复制',
+  copyFailed: '复制失败',
+  copyAria: '复制引用: {name}',
   summary: '复制引用时的命名规则',
   intro: '每行一条规则, 从左到右依次是正则, flags 与替换文本; 行首勾选启用, 行尾调整顺序或删除. 规则按顺序作用在会话标题上, 正则留空表示跳过该条, 编译失败的规则在复制时同样跳过.',
   enabled: '启用',

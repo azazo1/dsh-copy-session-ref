@@ -194,6 +194,43 @@ const CSS_TEXT = `
     width: auto;
   }
 }
+
+/* 会话行 hover 卡片里的复制引用行.
+   卡片表面在深浅主题下都是 #2C2C2E, 所以这里跟卡片本体一样用字面浅灰,
+   而不是会随主题翻转的语义 token. */
+.dcsr-hover-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  color: #CFD3D6;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dcsr-hover-copy:hover {
+  color: #FFFFFF;
+}
+
+.dcsr-hover-copy:focus-visible {
+  outline: var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color, var(--dsw-alias-state-business-primary));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.dcsr-hover-copy-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+}
 `
 
 /** 注入一次样式标签, 重复调用无副作用. */

@@ -1,13 +1,15 @@
-/** Minimal session-list face used to resolve the clicked row. */
-export interface SessionList {
-  getSnapshot(): {
-    ids: readonly string[]
-    byId: Record<string, SessionSummary | undefined>
-    current: string | undefined
-  }
+/** 会话身份的解析: 两个复制入口都从这里取目标会话. */
+
+/**
+ * 会话列表快照里本插件读得到的部分.
+ * 真实快照 (dsh-api-session-controller 的 SessionListState) 还带 ids, phase 与
+ * projectionsBySession, 这里只声明用得上的 byId.
+ */
+export interface SessionListSnapshot {
+  byId: Record<string, SessionSummary | undefined>
 }
 
-/** One listed session. */
+/** 列表里的一行会话. */
 export interface SessionSummary {
   id: string
   displayTitle: string
@@ -15,58 +17,22 @@ export interface SessionSummary {
   updatedAt: number
 }
 
-/** Resolved target for the open session menu. */
+/** 一次复制要用的目标: 会话 id 与给人看的名称. */
 export interface ResolvedSession {
   id: string
   label: string
 }
 
-/** ui-workspace locale lookup. */
-export type WorkspaceTranslate = (key: string, params?: Record<string, unknown>) => string
+/** 框架给每个 slot 的标准 hook: 用选择器读会话列表快照. */
+export type UseSessions = <T>(selector: (state: SessionListSnapshot) => T) => T
 
 /**
- * Map the clicked session-row action button to a listed session.
- * Matches DSH's own `actions.session.aria` copy so language switches follow
- * the host dictionary. Same-title rows are disambiguated by selected state,
- * then by DOM order among matching action buttons.
- * @param button - the ellipsis button that opened the menu.
- * @param list - live session list snapshot source.
- * @param t - ui-workspace translator.
- * @returns session id and display label, or undefined when unresolved.
+ * 把列表快照里的一行收成复制目标.
+ * 空会话 (还没有第一条消息) 与查不到的行都没有可引用的身份.
+ * @param row - 该 id 在快照里对应的行.
+ * @returns 会话 id 与显示标题, 或 undefined.
  */
-export function resolveSession(
-  button: HTMLElement,
-  list: SessionList,
-  t: WorkspaceTranslate,
-): ResolvedSession | undefined {
-  const aria = button.getAttribute('aria-label')
-  if (aria === null || aria === '') return undefined
-  const treeitem = button.closest('[role="treeitem"]')
-  if (!(treeitem instanceof HTMLElement)) return undefined
-
-  const snap = list.getSnapshot()
-  const matches = snap.ids
-    .map(id => snap.byId[id])
-    .filter((row): row is SessionSummary => (
-      row !== undefined
-      && !row.blank
-      && t('actions.session.aria', { name: row.displayTitle }) === aria
-    ))
-  if (matches.length === 0) return undefined
-  if (matches.length === 1) return { id: matches[0].id, label: matches[0].displayTitle }
-
-  const selected = treeitem.getAttribute('aria-selected') === 'true'
-  if (selected) {
-    const current = matches.find(row => row.id === snap.current)
-    if (current !== undefined) return { id: current.id, label: current.displayTitle }
-  }
-
-  const sameTitleButtons = [...document.querySelectorAll('button[aria-label]')].filter((node) => {
-    if (!(node instanceof HTMLElement)) return false
-    if (node.closest('[role="treeitem"]') === null) return false
-    return node.getAttribute('aria-label') === aria
-  })
-  const index = sameTitleButtons.indexOf(button)
-  const hit = matches[index] ?? matches[0]
-  return { id: hit.id, label: hit.displayTitle }
+export function sessionTarget(row: SessionSummary | undefined): ResolvedSession | undefined {
+  if (row === undefined || row.blank) return undefined
+  return { id: row.id, label: row.displayTitle }
 }
