@@ -1,10 +1,10 @@
-# pnpm 供应链策略 (minimumReleaseAge) 的例外: 这几个刚发布的 0.1.7-rc.1 预发布包按原策略会被拒.
+# pnpm 供应链策略 (minimumReleaseAge) 的例外: 这几个刚发布的 0.1.7-rc.2 预发布包按原策略会被拒.
 minimumReleaseAgeExclude:
-  - '@deepseek-ai/dsh-brand@0.1.7-rc.1'
-  - '@deepseek-ai/dsh-client-store@0.1.7-rc.1'
-  - '@deepseek-ai/dsh-client-ui-plugin-manager@0.1.7-rc.1'
-  - '@deepseek-ai/dsh-client-ui-primitives@0.1.7-rc.1'
-  - '@deepseek-ai/dsh-client-ui-settings@0.1.7-rc.1'
-  - '@deepseek-ai/dsh-client-ui-slots@0.1.7-rc.1'
-  - '@deepseek-ai/dsh-timeout@0.1.7-rc.1'
-  - '@deepseek-ai/dsh-typert-protocol@0.1.7-rc.1'
+  - '@deepseek-ai/dsh-brand@0.1.7-rc.2'
+  - '@deepseek-ai/dsh-client-store@0.1.7-rc.2'
+  - '@deepseek-ai/dsh-client-ui-plugin-manager@0.1.7-rc.2'
+  - '@deepseek-ai/dsh-client-ui-primitives@0.1.7-rc.2'
+  - '@deepseek-ai/dsh-client-ui-settings@0.1.7-rc.2'
+  - '@deepseek-ai/dsh-client-ui-slots@0.1.7-rc.2'
+  - '@deepseek-ai/dsh-timeout@0.1.7-rc.2'
+  - '@deepseek-ai/dsh-typert-protocol@0.1.7-rc.2'
